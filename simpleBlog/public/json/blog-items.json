@@ -1,0 +1,31 @@
+{
+    "bloghead":"我的博客",
+    "blogitem":[
+        {
+            "blogtitle":"事件流",
+            "blogbody":"事件流。。。"
+        },
+        {
+            "blogtitle":"事件对象",
+            "blogbody":"事件对象。。。"
+        },
+        {
+            "blogtitle":"事件委托",
+            "blogbody":"事件委托。。。"
+        },
+        {
+            "blogtitle":"事件处理",
+            "blogbody":"事件处理。。。"
+        },
+        {
+            "blogtitle":"事件流",
+            "blogbody":"事件流。。。"
+        },
+        {
+            "blogtitle":"事件对象",
+            "blogbody":"事件对象。。。"
+        }
+        
+
+    ]
+}

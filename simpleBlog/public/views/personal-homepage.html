@@ -1,0 +1,14 @@
+
+<div class ="wrapper3">
+    <ul id = "blogList" class="blog-list" ng-click="blogClickHandler()" ng-mousemove="changeOver()" ng-mouseout = "changeOut()">
+        <li class ="list-item" ng-repeat="content in blogItems">
+            <h3 class="list-title">{{content.title}}</h3>
+            <p class="lis-tbody">{{content.content}}</p>
+        </li>
+    </ul>
+    <div class = "null-show" ng-show="isNull">
+        <p class="null-show-info">空空如也~ 快写你的第一个博客吧</p>
+        <input class="btn-write-blogs" type="button" ng-click = "btnWtieBlogs()" value="写博客" />
+    </div>
+
+</div>
