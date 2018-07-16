@@ -13,7 +13,7 @@ function writeData(pathname, req, res) {
         //查看源文件中是否有内容
         fs.readFile(pathname, function (err, data) {
             if (err)
-                send500(res);
+                send.send500(res);
             else {
                 if (data == "") {
                     postData = '[' + postData + ']';

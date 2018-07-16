@@ -3,6 +3,10 @@ var app = angular.module('myApp', ['ngRoute']);
 // 路由控制
 app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
+        .when('/', {
+            controller: 'blogListCtrl',
+            templateUrl: '../views/blog-list.html'
+        })
         .when('/login', {
             controller: 'loginCrtl',
             templateUrl: '../views/login.html'
@@ -84,31 +88,31 @@ app.controller("loginCrtl", ['$scope', '$rootScope', '$http', '$location', funct
     }
 }]);
 
-// 登录页控制器
+// 注册页控制器
 app.controller("signupCrtl", ['$scope', '$rootScope', '$http', '$location', function ($scope, $rootScope, $http, $location) {
-    // $scope.dataSumbit = function () {
-    //     if ($scope.myForm.$valid) { // 表单验证成功
-    //         $http({
-    //             method: 'post',
-    //             url: '/signup',
-    //             data: $scope.user
-    //         }).then(function (res) {
-    //             if (res.data.status == 200) { // 验证成功
+    $scope.dataSumbit = function () {
+        if ($scope.myForm.$valid) { // 表单验证成功
+            $http({
+                method: 'post',
+                url: '/signup',
+                data: $scope.userSign
+            }).then(function (res) {
+                if (res.data.status == 200) { // 注册成功
 
-    //                 // $rootScope.isLogout = false;
-    //                 // $rootScope.isLogin = true;
-    //                 // $rootScope.user = $scope.user;
+                    // $rootScope.isLogout = false;
+                    // $rootScope.isLogin = true;
+                    // $rootScope.user = $scope.user;
+                    alert('注册成功');
+                    $location.path('/login').replace();
+                }
+                else if (res.data.status == 403.3) { // 注册失败
 
-    //                 $location.path('/login').replace();
-    //             }
-    //             else if (res.data.status == 403.3) { // 验证失败
-
-    //                 alert('用户名或密码错误！请重新输入');
-    //                 $location.path('/login').replace();
-    //             }
-    //         });
-    //     }
-    // }
+                    alert('注册失败');
+                    $location.path('/signup').replace();
+                }
+            });
+       }
+    }
 }]);
 
 // 首页控制器
@@ -205,10 +209,15 @@ app.controller('writeBlogCtrl', ['$scope', '$rootScope', '$http', '$location', '
 
         $rootScope.isMyblog = true;
         $scope.user = $rootScope.user;
-        // $scope.date = new Date().toLocaleTimeString();
-        // $interval(function () {
-        //     $scope.date = new Date().toLocaleTimeString();
-        // }, 1000);
+        $scope.blog = {
+            "title": "",
+            "content": "",
+            "date": ""
+        };
+        $scope.blog.date = new Date().toLocaleTimeString();
+        $interval(function () {
+            $scope.blog.date = new Date().toLocaleTimeString();
+        }, 1000);
 
         $scope.blogPublish = function () {
             if ($scope.blog.title !== "" && $scope.blog.content !== "") {
@@ -220,17 +229,17 @@ app.controller('writeBlogCtrl', ['$scope', '$rootScope', '$http', '$location', '
                     if (res.data.status === 200) {
                         alert('提交成功');
                         $location.path('/writeblog').replace();
-                    } 
+                    }
                     else if (res.data.status === 403.3) {
                         alert('提交失败');
                         $location.path('/writeblog').replace();
-                    } 
-                }); 
-            } 
+                    }
+                });
+            }
             else {
                 alert("博客标题或者内容不能为空");
             }
-        } 
+        }
 
         $scope.blogListReview = function () {
             $location.path('/personalhome').replace();
@@ -281,7 +290,61 @@ app.directive("usernameValidate", function () {
     }
 });
 
+// 自定义验证用户名的指令
+app.directive("usernameUnique", function ($http) {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, elem, attrs, ctrl) {
+            scope.$watch(attrs.ngModel, function (viewValue) {
+                $http({
+                    method: 'post',
+                    url: '/uniqueValidate',
+                    data: { "username": viewValue }
+                }).success(function (data, status, header, cfg) {
+                    ctrl.$setValidity('unique', data.isUnique);
+                }).error(function (data, status, header, cfg) {
+                    ctrl.$setValidity('unique', false);
+                });
 
+            });
+        }
+    }
+});
+
+// 自定义密码一致性验证
+// 自定义验证用户名的指令
+app.directive("passwordRepeat", function () {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, elem, attrs, ctrl) {
+            //scope.$watch(attrs.ngModel, function (viewValue) {
+                //     var firstPassword = '#' + attrs.passwordRepeat;
+                //     elem.add(firstPassword).on('keyup', function () {
+                //         scope.$apply(function () {
+                //             var value = elem.val() === $(firstPassword).val();
+                //             ctrl.$setValidity('repeat', value);
+                //         });
+                //     });
+                //     
+            //});
+            var otherInput = elem.inheritedData("$formController")[attrs.passwordRepeat];
+            ctrl.$parsers.push(function(value) {
+                if(value === otherInput.$viewValue) {
+                    ctrl.$setValidity("repeat", true);
+                    return value;
+                }
+                ctrl.$setValidity("repeat", false);
+            });
+             otherInput.$parsers.push(function(value) {
+                ctrl.$setValidity("repeat", value === ctrl.$viewValue);
+                return value;
+
+            });
+        }
+    }
+})
 // 判断祖先元素是否为指定元素（一级级向上查找，直到找到或者到body元素）
 function getParentByClassName(child, parentClass) {
     var parent;
