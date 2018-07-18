@@ -133,9 +133,32 @@ function postBlog(req, res) {
 function getList(res) {
     console.log("Request handler 'getList' was called.");
 
-    pathname = './public/json/blog-items.json';
-    send.sendPage(pathname, "application/json", res);
+    pathname =['./public/json/blog-information/2910776796@qq.com.json','./public/json/blog-information/suella123.json','./public/json/blog-information/zhangsan123.json'];
+     var datas = [];
+
+    for(var i= 0;i<pathname.length;i++){
+        datas[i] = fs.readFileSync(pathname[i],'utf-8');
+    }
+    
+    var str = datas[0].slice(0,datas[0].length-1);
+    for(var i= 1;i<datas.length;i++){
+        str += ','+datas[i].slice(1,datas[i].length-1);
+    }
+    str += ']';
+
+    blogData = JSON.parse(str);
+    blogData.sort(keySort('date',true));
+    
+    res.writeHead(200, { 'content-Type': 'application/json' });
+                res.end(JSON.stringify(blogData));
 }
+
+//对数组对象根据某一属性值排序
+function keySort(key,sortType){
+    return function(a,b){
+         return sortType ? ~~a[key]<b[key]:~~a[key]>b[key]
+     }
+ }
 
 // 读取个人主页数据
 function getPersonalHomePage(res) {

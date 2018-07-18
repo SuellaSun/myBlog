@@ -19,6 +19,10 @@ app.config(['$routeProvider', function ($routeProvider) {
             controller: 'blogListCtrl',
             templateUrl: '../views/blog-list.html'
         })
+        .when('/getArticleDetails', {
+            controller: 'getArticleDetialsCtrl',
+            templateUrl: '../views/blog-item.html'
+        })
         .when('/personalhome', {
             controller: 'personalCtrl',
             templateUrl: '../views/personal-homepage.html'
@@ -111,12 +115,12 @@ app.controller("signupCrtl", ['$scope', '$rootScope', '$http', '$location', func
                     $location.path('/signup').replace();
                 }
             });
-       }
+        }
     }
 }]);
 
 // 首页控制器
-app.controller('blogListCtrl', ['$scope', '$rootScope', '$http', function ($scope, $rootScope, $http) {
+app.controller('blogListCtrl', ['$scope', '$rootScope', '$http', '$location',function ($scope, $rootScope, $http,$location) {
     $rootScope.isMyblog = false;
     $http({// 与后端交互，获取数据
         method: 'GET',
@@ -124,55 +128,24 @@ app.controller('blogListCtrl', ['$scope', '$rootScope', '$http', function ($scop
     }).then(function (res) {
         if (res.status !== 200)
             alert(res.status + "状态，出错啦！");
-        $scope.blogItems = res.data.blogitem;
+        $scope.blogItems = res.data;
     });
 
-    // 利用事件委托实现事件绑定一次
-    var myUL = document.getElementById("blogList");
-    var myLI = myUL.getElementsByClassName("list-item");
 
-    $scope.blogClickHandler = function ($event) {
-        var event = $event || window.event;
-        var target = event.target || event.srcElement;// 兼容IE和Firefox
 
-        target = getParentByClassName(target, "list-item");
-        if (target.classList.contains("list-item")) {
-            for (var i = 0; i < myLI.length; i++) {
-                if (myLI[i] === target) {
-                    var children = target.children;
-                    window.location.href = "../veiws/blog-item.html";
-                    // alert(children[1].innerHTML);// 这里目前用的还是DOM
-                }
-            }
-        }
+    $scope.blogClickHandler = function (index) {
+        //$scope.id = $scope.blogItems[index].id;
+        $location.path('/getArticleDetails').search($scope.blogItems[index].id);
     }
 
-    $scope.changeOver = function ($event) {
-        var event = $event || window.event;
-        var target = event.target || event.srcElement;//兼容IE和Firefox
+    $scope.changeOver = function (index) {
 
-        target = getParentByClassName(target, "list-item");
-        if (target.classList.contains("list-item")) {
-            for (var i = 0; i < myLI.length; i++) {
-                if (myLI[i] === target) {
-                    target.style.backgroundColor = "WhiteSmoke";// 这里目前用的还是DOM
-                }
-            }
-        }
     }
-    $scope.changeOut = function ($event) {
-        var event = $event || window.event;
-        var target = event.target || event.srcElement;//兼容IE和Firefox
+}]);
 
-        target = getParentByClassName(target, "list-item");
-        if (target.classList.contains("list-item")) {
-            for (var i = 0; i < myLI.length; i++) {
-                if (myLI[i] === target) {
-                    target.style.backgroundColor = "";// 这里目前用的还是DOM
-                }
-            }
-        }
-    }
+app.controller('getArticleDetialsCtrl', ['$scope', '$rootScope', '$http', '$location','$routeParams', function ($scope, $rootScope, $http, $location,$routeParams){
+$scope.id = $routeParams.id;
+
 }]);
 
 // 个人主页控制器
@@ -320,24 +293,24 @@ app.directive("passwordRepeat", function () {
         require: 'ngModel',
         link: function (scope, elem, attrs, ctrl) {
             //scope.$watch(attrs.ngModel, function (viewValue) {
-                //     var firstPassword = '#' + attrs.passwordRepeat;
-                //     elem.add(firstPassword).on('keyup', function () {
-                //         scope.$apply(function () {
-                //             var value = elem.val() === $(firstPassword).val();
-                //             ctrl.$setValidity('repeat', value);
-                //         });
-                //     });
-                //     
+            //     var firstPassword = '#' + attrs.passwordRepeat;
+            //     elem.add(firstPassword).on('keyup', function () {
+            //         scope.$apply(function () {
+            //             var value = elem.val() === $(firstPassword).val();
+            //             ctrl.$setValidity('repeat', value);
+            //         });
+            //     });
+            //     
             //});
             var otherInput = elem.inheritedData("$formController")[attrs.passwordRepeat];
-            ctrl.$parsers.push(function(value) {
-                if(value === otherInput.$viewValue) {
+            ctrl.$parsers.push(function (value) {
+                if (value === otherInput.$viewValue) {
                     ctrl.$setValidity("repeat", true);
                     return value;
                 }
                 ctrl.$setValidity("repeat", false);
             });
-             otherInput.$parsers.push(function(value) {
+            otherInput.$parsers.push(function (value) {
                 ctrl.$setValidity("repeat", value === ctrl.$viewValue);
                 return value;
 
