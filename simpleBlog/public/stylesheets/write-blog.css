@@ -1,7 +1,6 @@
 .write-blog-wrapper{
     position: relative;
     width: 100%;
-
 }
 .blog-box-title,.blog-box-content,.blog-box-button{
     position: relative;
@@ -12,12 +11,12 @@
     
 }
 .blog-box-title{
-    margin-top: 10px;
-    height: 30px;
+    margin-top: 20px;
+    height: 40px;
     border: 1px solid transparent;
 }
 .blog-box-content{
-    height: 300px;
+    height: 400px;
     border: 1px solid transparent;
 }
 .txt-blog-title,.txt-blog-content{

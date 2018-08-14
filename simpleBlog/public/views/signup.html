@@ -1,35 +1,35 @@
-<div class="wrapper1">
-    <div class="wrapper11">
-        <div class="form-wrapper">
-            <form name="myForm" class="parent" ng-submit="dataSumbit()" novalidate>
-                <div class="child login-header">
-                    <p class="login-header1">用户注册</p>
+<div class="wrapper2">
+    <div class="wrapper22">
+        <div class="form-wrapper2">
+            <form name="myForm" class="parent2" ng-submit="dataSumbit()" novalidate>
+                <div class="child2 login-header2">
+                    <p class="p-login-header2">用户注册</p>
                 </div>
-                <input class="child userinfo" type="text" name="userName" placeholder="用户名/手机号/邮箱" ng-model="userSign.username" username-Validate
+                <input class="child2 userinfo2" type="text" name="userName" placeholder="用户名/手机号/邮箱" ng-model="user.username" username-Validate
                     username-Unique required />
 
-                <span ng-show="myForm.userName.$dirty && myForm.userName.$touched">
-                    <span class="showError" ng-show="myForm.userName.$error.required">用户名不能为空</span>
-                    <span class="showError" ng-show="myForm.userName.$error.formatValid">用户名格式错误。</span>
-                    <span class="showError" ng-show="myForm.userName.$error.unique">用户名已存在</span>
+                <span class="showError2" ng-show="myForm.userName.$dirty && myForm.userName.$touched">
+                    <span ng-show="myForm.userName.$error.required">用户名不能为空</span>
+                    <span ng-show="myForm.userName.$error.formatValid">用户名格式错误。</span>
+                    <span ng-show="myForm.userName.$error.unique">用户名已存在</span>
                 </span>
                 <br>
-                <input id="password" class="child userinfo" type="password" name="password" placeholder="请输入密码" ng-model="userSign.password"
+                <input id="password" class="child2 userinfo2" type="password" name="password" placeholder="请输入密码" ng-model="signUserInfo.password"
                     required />
-                <span class="showError" ng-show="myForm.password.$dirty && myForm.password.$touched">
-                    <span class="showError" ng-show="myForm.password.$error.required">密码不能为空</span>
+                <span class="showError2" ng-show="myForm.password.$dirty && myForm.password.$touched">
+                    <span ng-show="myForm.password.$error.required">密码不能为空</span>
                 </span>
                 <br>
 
-                <input id="confirmPassword" class="child userinfo" type="password" name="confirmPassword" placeholder="再次输入密码" ng-model="userSign.confirmPassword"
+                <input id="confirmPassword" class="child2 userinfo2" type="password" name="confirmPassword" placeholder="再次输入密码" ng-model="signUserInfo.confirmPassword"
                     password-Repeat="password" required>
                 </input>
                 <span class="showError" ng-show="myForm.confirmPassword.$dirty && myForm.confirmPassword.$touched">
-                    <span class="showError" ng-show="myForm.confirmPassword.$error.required">密码不能为空</span>
-                    <span class="showError" ng-show="myForm.confirmPassword.$error.repeat">两次密码不一致</span>
+                    <span ng-show="myForm.confirmPassword.$error.required">密码不能为空</span>
+                    <span ng-show="myForm.confirmPassword.$error.repeat">两次密码不一致</span>
                 </span>
                 <br>
-                <button type=" submit " class="child btn-signup " name="sigunup ">注册</button>
+                <button type=" submit " class="child2 btn-signup2" name="sigunup ">注册</button>
                 <br>
             </form>
         </div>

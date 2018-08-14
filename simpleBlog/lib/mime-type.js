@@ -26,4 +26,3 @@ function getContentType(suffix) {
 }
 
 exports.getContentType = getContentType;
-

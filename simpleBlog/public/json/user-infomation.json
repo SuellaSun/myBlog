@@ -1,18 +1,1 @@
-[
-    {
-        "username": "2910776796@qq.com",
-        "password": "12345678"
-    },
-    {
-        "username": "zhangsan123",
-        "password": "12345678"
-    },
-    {
-        "username": "lisi123",
-        "password": "12345678"
-    },
-    {
-        "username": "wangwu123",
-        "password": "12345678"
-    }
-,{"username":"suella123","password":"12345678"},{"username":"suella1234","password":"12345678","confirmPassword":"12345678"}]
+[{"username":"2910776796@qq.com","password":"12345678"},{"username":"","password":"12345678"}]

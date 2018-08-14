@@ -1,16 +1,15 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8" />
-    <title>BlogSystem</title>
-
-</head>
-
-<body >
-
-<p>{{id}}</p>
-
-</body>
-
-</html>
+<div class="header">
+    <div class="title">
+        <span class ="article-title">{{article.title}}</h3>
+    </div>
+    <div class = "auth-info">
+        <span class="info">发布时间：{{article.date}}</span>
+        <span class="info">作者：{{article.username}}</spanclass>
+    </div>
+</div>
+<hr>
+<div class="content">
+    <div>
+        <p class = "article-content">{{article.content}}</p>
+    </div>
+</div>

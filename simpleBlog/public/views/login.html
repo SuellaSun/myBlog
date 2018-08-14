@@ -1,27 +1,24 @@
-<div class="wrapper1">
+<!-- <div class="wrapper1">
     <div class="wrapper11">
         <div class="form-wrapper">
             <form name="myForm" class="parent" ng-submit="dataSumbit()" novalidate>
-                <div class="child login-header">
-                    
-                    <p class="login-header1">用户登录</p>
-                
+                <div class="child login-header">    
+                    <p class="p-login-header">用户登录</p>
                 </div>
                 <input class="child userinfo" type="text" name="userName" placeholder="用户名/手机号/邮箱" ng-model="user.username" username-Validate required>
                 </input>
-                <span ng-show="myForm.userName.$dirty && myForm.userName.$touched">
-                    <span class="showError" ng-show="myForm.userName.$error.required">用户名不能为空</span>
-                    <span class="showError" ng-show="myForm.userName.$error.formatValid">用户名格式错误。</span>
-
+                <span class="showError" ng-show="myForm.userName.$dirty && myForm.userName.$touched">
+                    <span  ng-show="myForm.userName.$error.required">用户名不能为空</span>
+                    <span  ng-show="myForm.userName.$error.formatValid">用户名格式错误。</span>
                 </span>
                 <br>
                 
                 <input class="child userinfo" type="password" name="password" placeholder="密码" ng-model="user.password" required>
                 </input>
                 <span class="showError"  ng-show="myForm.password.$dirty && myForm.password.$touched">
-                    <span class="showError" ng-show="myForm.password.$error.required">密码不能为空</span>
-
+                    <span ng-show="myForm.password.$error.required">密码不能为空</span>
                 </span>
+                
                 <br>
                 <input class="chk" type="checkbox" name="autologin" value="no">
                 <span class="chbx">下一次自动登录</span>
@@ -32,4 +29,36 @@
         </div>
     </div>
 
+</div> -->
+
+<div class="wrapper1">
+    <div class="wrapper11">
+        <div class="form-wrapper">
+            <form name="myForm" class="parent" ng-submit="dataSumbit()" novalidate>
+                <div class="child login-header">    
+                    <p class="p-login-header">用户登录</p>
+                </div>
+                <input class="child userinfo" type="text" name="userName" placeholder="用户名/手机号/邮箱" ng-model="user.username" username-Validate required>
+                </input>
+                <span class="showError" ng-show="myForm.userName.$dirty && myForm.userName.$touched">
+                    <span  ng-show="myForm.userName.$error.required">用户名不能为空</span>
+                    <span  ng-show="myForm.userName.$error.formatValid">用户名格式错误。</span>
+                </span>
+                <br>
+                
+                <input class="child userinfo" type="password" name="password" placeholder="密码" ng-model="user.password" required>
+                </input>
+                <span class="showError"  ng-show="myForm.password.$dirty && myForm.password.$touched">
+                    <span ng-show="myForm.password.$error.required">密码不能为空</span>
+                </span>
+                
+                <br>
+                <input class="chk" type="checkbox" name="autologin" value="no">
+                <span class="chbx">下一次自动登录</span>
+                <br>
+                <button type="submit" class="child btn-login" name="login">登录</button>
+                <br>
+            </form>
+        </div>
+    </div>
 </div>

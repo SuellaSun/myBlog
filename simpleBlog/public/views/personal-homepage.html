@@ -1,14 +1,28 @@
+<div class="wrapper3">
+    <ul class="p-blog-list">
+        <li class="p-list-item" ng-repeat="content in blogItems" ng-click="blogClickHandler($index)" ng-mousemove="changeOver($index)"
+            ng-class="{over:$index==over}">
+            <div class="list-head">
+                <h3 class="p-list-title">{{content.title}}</h3>
+            </div>
+            <div class="list-body">
+                <p class="p-list-body">{{content.content}}</p>
+            </div>
 
-<div class ="wrapper3">
-    <ul id = "blogList" class="blog-list" ng-click="blogClickHandler()" ng-mousemove="changeOver()" ng-mouseout = "changeOut()">
-        <li class ="list-item" ng-repeat="content in blogItems">
-            <h3 class="list-title">{{content.title}}</h3>
-            <p class="lis-tbody">{{content.content}}</p>
+            <div class="list-foot">
+                <div class="name">
+                    <p class="p-list-username">用户：{{content.username}}</p>
+                </div>
+                <div class="date">
+                    <p class="p-list-publish-time">{{content.date}}</p>
+                </div>
+            </div>
+
         </li>
     </ul>
-    <div class = "null-show" ng-show="isNull">
+    <div class="null-show" ng-show="isNull">
         <p class="null-show-info">空空如也~ 快写你的第一个博客吧</p>
-        <input class="btn-write-blogs" type="button" ng-click = "btnWtieBlogs()" value="写博客" />
+        <input class="btn-write-blogs" type="button" ng-click="btnWtieBlogs()" value="写博客" />
     </div>
 
 </div>

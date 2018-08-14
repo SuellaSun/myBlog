@@ -1,0 +1,29 @@
+.article-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 8px 0;
+    display: inline-block;
+    vertical-align: bottom;
+    width: 75%;
+    line-height: 130%;
+}
+.info{
+    font-size: 12px;
+    color: #838383;
+}
+.info:before {
+    content: "•";
+}
+.article-content{
+    margin: 0 10px;
+    line-height: 2em;
+    font-family: "Helvetica Neue","Luxi Sans","DejaVu Sans",Tahoma,"Hiragino Sans GB",STHeiti,sans-serif!important;
+    font-size: 14px;
+    word-break: break-word;
+    overflow: auto;
+}
+hr{        
+    background: rgb(236, 235, 235);        
+    border: none;        
+    height: 1px;    
+}

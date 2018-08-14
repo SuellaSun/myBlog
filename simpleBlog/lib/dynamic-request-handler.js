@@ -1,8 +1,9 @@
-var send = require('./send-page');
 var fs = require('fs');
+var path = require('path');
 var write = require('./write-data');
+var send = require('./send-page');
+const util = require('./util');
 
-//动态请求处理
 function dynamicReqHandler(pathname, req, res) {
     switch (pathname) {
         case "/":
@@ -25,11 +26,15 @@ function dynamicReqHandler(pathname, req, res) {
             getList(res);
             break;
         case "/getPersonalhome":
-            getPersonalHomePage(res);
+            getPersonalHomePage(req, res);
             break;
+        case "/getArticleDetails":
+            getArticleDetails(req, res);
+            break;
+
         default:
-            sen.send500(res);
-    }//switch
+            send.send500(res);
+    }
 }
 
 // 用户登录验证
@@ -43,33 +48,27 @@ function login(req, res) {
     });
     // 在end事件触发后然后向客户端返回。
     req.on('end', function () {
-
-        postData = JSON.parse(postData);// 解析接收的浏览器请求
-        console.log(postData);
-
-        // 返回给客户端的状态数据
         var reslut = { 'status': '' };
-        fs.readFile('./public/json/user-infomation.json', function (err, uesrInfo) {
+        postData = JSON.parse(postData);
+
+        fs.readFile('./public/json/user-infomation.json', function (err, userInfo) {
             if (err)
                 send.send500(res);
             else {
-                uesrInfo = JSON.parse(uesrInfo);
-                var flag = false;
-                for (var i = 0; i < uesrInfo.length; i++) {
-                    if (uesrInfo[i].username === postData.username && uesrInfo[i].password === postData.password) {
-                        flag = true;
-                    }
-                }
-                if (flag) {
-                    reslut.status = 200;
-                    //res.writeHead(200, { 'content-Type': 'text/plain' });
-                }
-                else {
+                if(userInfo !=""){
+                    userInfo = JSON.parse(userInfo);
+                    let flag = util.userExists(userInfo, postData);
+                    if (flag >= 0) 
+                        reslut.status = 200;
+                    else 
+                        reslut.status = 401.1;
+                    res.writeHead(200, { 'content-Type': 'text/plain' });
+                    res.end(JSON.stringify(reslut));
+                }else{
                     reslut.status = 401.1;
-                    //res.writeHead(530, { 'content-Type': 'text/plain' });
+                    res.writeHead(200, { 'content-Type': 'text/plain' });
+                    res.end(JSON.stringify(reslut));
                 }
-                res.writeHead(200, { 'content-Type': 'text/plain' });
-                res.end(JSON.stringify(reslut));
             }
         });
     });
@@ -98,25 +97,24 @@ function uniqueValidate(req, res) {
 
         // 返回给客户端的状态数据
         var reslut = { 'isUnique': '' };
-        fs.readFile('./public/json/user-infomation.json', function (err, uesrInfo) {
+        fs.readFile('./public/json/user-infomation.json', function (err, userInfo) {
             if (err)
                 send.send500(res);
             else {
-                uesrInfo = JSON.parse(uesrInfo);
-                var flag = false;
-                for (var i = 0; i < uesrInfo.length; i++) {
-                    if (uesrInfo[i].username === postData.username) {
-                        flag = true;
+                if (userInfo != "") {
+                    userInfo = JSON.parse(userInfo);
+                    var flag = false;
+                    for (var i = 0; i < userInfo.length; i++) {
+                        if (userInfo[i].username === postData.username) 
+                            flag = true;
                     }
+                    if (flag) // 存在，不唯一
+                        reslut.isUnique = false;
+                    else  // 不存在，唯一
+                        reslut.isUnique = true;
+                    res.writeHead(200, { 'content-Type': 'text/plain' });
+                    res.end(JSON.stringify(reslut));
                 }
-                if (flag) { // 存在，不唯一
-                    reslut.isUnique = false;   
-                }
-                else {  // 不存在，唯一
-                    reslut.isUnique = true;  
-                }
-                res.writeHead(200, { 'content-Type': 'text/plain' });
-                res.end(JSON.stringify(reslut));
             }
         });
     });
@@ -125,48 +123,100 @@ function uniqueValidate(req, res) {
 // 提交博客数据
 function postBlog(req, res) {
     console.log("Request handler 'postBlogs' was called.");
+    var postData = '';
 
-    pathname = './public/json/user-blogs.json';
-    write.writeData(pathname, req, res);
+    req.on('data', function (chunk) {
+        postData += chunk;
+    });
+
+    req.on('end', function () {
+        postData = JSON.parse(postData);
+
+        fs.readFile('./public/json/user-infomation.json', function (err, userInfo) {
+            if (err)
+                send.send500(res);
+            else {
+                let pathname = util.getPath(userInfo, postData.user);
+                postData.blog.username = postData.user.username;
+                write.insertBlogInfo(pathname, postData.blog, res);
+            }
+        });
+    });
+
 }
-// 读取JSON数据
+// 首页读取JSON数据，显示博客列表（修改，显示所有用户的最新10条）
 function getList(res) {
     console.log("Request handler 'getList' was called.");
 
-    pathname =['./public/json/blog-information/2910776796@qq.com.json','./public/json/blog-information/suella123.json','./public/json/blog-information/zhangsan123.json'];
-     var datas = [];
-
-    for(var i= 0;i<pathname.length;i++){
-        datas[i] = fs.readFileSync(pathname[i],'utf-8');
+    dirname = path.join(__dirname, '/../public/json/blog-information/');
+    let fileNames = util.findSync(dirname);
+    var datas = [];
+    for (let i = 0; i < fileNames.length; i++) {
+        datas[i] = fs.readFileSync(fileNames[i], 'utf-8');
     }
-    
-    var str = datas[0].slice(0,datas[0].length-1);
-    for(var i= 1;i<datas.length;i++){
-        str += ','+datas[i].slice(1,datas[i].length-1);
-    }
-    str += ']';
+    var copyDatas = util.getNotNullFile(datas);
+    var blogData = "";
+    if (copyDatas.length != 0) {
+        var blogData = copyDatas[0].slice(0, copyDatas[0].length - 1);
+        for (let i = 1; i < copyDatas.length; i++) {
+            blogData += ',' + copyDatas[i].slice(1, copyDatas[i].length - 1);
+        }
+        blogData += ']';
 
-    blogData = JSON.parse(str);
-    blogData.sort(keySort('date',true));
-    
-    res.writeHead(200, { 'content-Type': 'application/json' });
-                res.end(JSON.stringify(blogData));
+        // 以date降序重新排列blogData
+        blogData = JSON.parse(blogData).sort(util.keySort("date"));
+
+        res.writeHead(200, { 'content-Type': 'application/json' });
+        res.end(JSON.stringify(blogData));
+    }
+    else {
+        blogData = "[]";
+
+        res.writeHead(200, { 'content-Type': 'application/json' });
+        res.end(blogData);
+    }
 }
-
-//对数组对象根据某一属性值排序
-function keySort(key,sortType){
-    return function(a,b){
-         return sortType ? ~~a[key]<b[key]:~~a[key]>b[key]
-     }
- }
 
 // 读取个人主页数据
-function getPersonalHomePage(res) {
+function getPersonalHomePage(req, res) {
     console.log("Request handler 'getPersonalHomePage' was called.");
 
-    pathname = './public/json/user-blogs.json';
-    send.sendPage(pathname, "application/json", res);
+    var postData = '';
+    req.on('data', function (chunk) {
+        postData += chunk;
+    });
+    // 在end事件触发后然后向客户端返回。
+    req.on('end', function () {
+        postData = JSON.parse(postData);// 解析接收的浏览器请求
 
+        // 根据用户名区分是哪个用户的主页数据，读取相应文件
+        fs.readFile('./public/json/user-infomation.json', function (err, userInfo) {
+            if (err)
+                send.send500(res);
+            else {
+                var pathname = util.getPath(userInfo, postData);
+                send.sendPage(pathname, "application/json", res);
+            }
+        });
+    });
 }
 
+// 获取博客详情
+function getArticleDetails(req, res) {
+    console.log("Request handler 'getArticleDetails' was called.");
+
+    var postData = '';
+    req.on('data', function (chunk) {
+        postData += chunk;
+    });
+
+    req.on('end', function () {
+        postData = JSON.parse(postData);
+        let pathname = './public/json/blog-information/' + postData.username + '.json';
+        blogData = JSON.parse(fs.readFileSync(pathname, 'utf-8'));
+
+        res.writeHead(200, { 'content-type': "application/json" });
+        res.end(JSON.stringify(blogData[blogData.length - postData.id]));
+    });
+}
 exports.dynamicReqHandler = dynamicReqHandler;

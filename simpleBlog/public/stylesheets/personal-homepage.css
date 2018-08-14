@@ -1,3 +1,26 @@
+.p-list-item{
+    margin-bottom:-1px;
+    /* height: 120px;  */
+    border-bottom: 1px dotted lightgrey;
+    border-top: 1px dotted lightgrey;
+    
+}
+.list-head,.list-body,.list-foot{
+    margin-top:8px;
+    margin-bottom:8px; 
+    margin-left: 10px;
+    margin-right:0px;
+}
+.name{
+    position: relative;
+    float: left;
+}
+.p-list-username,.p-list-publish-time{
+    font-size: 0.7em;
+}
+.p-list-publish-time{
+    text-align: end;
+}
 .null-show{
     position: relative;
     width: 100%;
